@@ -1,0 +1,22 @@
+------------------------------------------------------------------------------------------------------------------------------------------------
+How to move between pages:
+
+Website will start on the 'info' page which is the welcome page
+There is a login button on the top right and in the center below the welcome that leads to the login screen
+
+Login screen will have entered username and password and then on clicking login, will lead to the home page
+
+On the home page, you will have an option to view either a semster or list based view of the classes you are taking/have taken/will take
+There will be a button that allows you to change your major
+Upon login implamentation, the login button will change to a log out button
+------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+Desired Design Implamentations:
+- Login/Logout sessions and corrosponding button and information viewing 
+- Allow the user to switch a class from in-progress to enter a grade or withdraw
+- Allow user to enter/select an elective class 
+- Add information to the change major page that will let the user change their major and classes will adjust accordingly
+    - Connect this website to the Geneva API so that I can take the classes from the Geneva website and use them on this website
+- Allow the logged in user to select what student they want to view
