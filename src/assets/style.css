@@ -1,0 +1,42 @@
+
+
+/* This keeps the footer at the bottom of the screen no matter what */
+.app-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+}
+
+/* Makes the header image shorter height wise */
+.navbarIMG .hero-body {
+  padding: 0;
+  overflow: hidden;
+  height: 150px;
+}
+
+.navbarIMG .hero-body img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.navbarIMG {
+  margin-bottom: 0 !important;
+}
+
+/* Hover color for Geneva college button */
+.logo:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+
+/* Student information */
+.student-info-card {
+  position: sticky;
+  top: 1.5rem;
+}
