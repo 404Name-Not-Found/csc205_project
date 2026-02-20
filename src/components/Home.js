@@ -35,7 +35,18 @@ export default {
 
                         <p class="is-size-7 has-text-grey has-text-weight-semibold mb-1">Year [By Credits]</p>
                         <p class="is-size-5 has-text-weight-bold">Junior</p>
+
+                        <p class="is-size-7 has-text-grey has-text-weight-semibold mb-1 mt-3">Major</p>
+                        <p class="is-size-5 has-text-weight-bold mb-3">Computer Science</p>
+
+                        <p class="is-size-7 has-text-grey has-text-weight-semibold mb-1">Minor</p>
+                        <p class="is-size-5 has-text-weight-bold">Cyber Security</p>
+
+                        <br>
+                        <router-link to="/major" class="button is-medium is-link is-light mt-4">Change Major</router-link>
+                    
                     </div>
+                        
                 </div>
 
                 <!-- Tab system from Bulma website for semester or list view -->
