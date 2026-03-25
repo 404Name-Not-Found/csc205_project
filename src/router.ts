@@ -5,6 +5,7 @@ import Login from './components/Login.js';
 import Home from './components/Home.js';
 import Info from './components/Info.js';
 import Major from './components/Major.js';
+import ChangePassword from './components/ChangePassword.js';
 
 const routes = [
   {
@@ -26,6 +27,11 @@ const routes = [
     path: '/major',
     name: 'Major',
     component: Major
+  },
+  {
+    path: '/change',
+    name: 'ChangePassword',
+    component: ChangePassword
   }
 ];
 

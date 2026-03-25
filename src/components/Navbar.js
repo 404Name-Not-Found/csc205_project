@@ -1,5 +1,25 @@
+import authStore from '../authStore.js';
+
 export default {
   name: 'Navbar',
+
+  data (){
+    return {
+      authStore
+    }
+  },
+
+  mounted(){
+    this.authStore.checkLoginStatus();
+  },
+
+  methods: {
+    async handleLogout(){
+      this.authStore.logout();
+      this.$router.push('/login');
+    }
+  },
+
   template: 
   `
     <section class="hero is-small navbarIMG">
@@ -21,9 +41,14 @@ export default {
         </div>
       </div>
 
+
       <div class="navbar-end">
         <div class="navbar-item">
-          <div class="buttons">
+          <div v-if="authStore.isLoggedIn">
+            <router-link to="/change" class="button is-light">Change Password</router-link>
+            <button class="button is-light ml-2" @click="handleLogout">Logout</button>
+          </div>
+          <div v-else>
             <router-link to="/login" class="button is-light">Login</router-link>
           </div>
         </div>
