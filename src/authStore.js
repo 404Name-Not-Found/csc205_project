@@ -19,6 +19,7 @@ const authStore = reactive({
     logout() {
         localStorage.removeItem('user_token');
         localStorage.removeItem('user_info');
+        localStorage.removeItem('active_student');
         this.isLoggedIn = false;
     },
 

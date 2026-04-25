@@ -4,7 +4,6 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Login from './components/Login.js';
 import Home from './components/Home.js';
 import Info from './components/Info.js';
-import Major from './components/Major.js';
 import ChangePassword from './components/ChangePassword.js';
 
 const routes = [
@@ -22,11 +21,6 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: Login
-  },
-  {
-    path: '/major',
-    name: 'Major',
-    component: Major
   },
   {
     path: '/change',

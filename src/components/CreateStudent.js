@@ -1,11 +1,14 @@
+import { useStudentStore } from '../stores/student.ts';
+
 export default {
 
-    // For this component,
-    // I had gemini write console log statements that would write to the web console 
-    // It show what information I could access for each student
-    // I used those console log statements to fill in the variables on this page
-
     name: 'CreateStudent',
+
+    // Access to student state manager to update student list after making a new student
+    setup() {
+        const studentStore = useStudentStore();
+        return { studentStore };
+    },
 
     data() {
         return {
@@ -14,53 +17,118 @@ export default {
                 lastname: '',
                 preferred_name: '',
                 email: '',
-                student_id: '',
                 matriculation_year: new Date().getFullYear(),
                 math_proficient: false,
                 reading_proficient: false,
                 foreign_language: false,
                 is_active: true,
-                major: '',
-                minor: '',
-                credits: []
+                major_id: null,
+                minor_id: null,
             },
             error: null,
             success: null,
-            Majors: [],
-            Minors:[],
+            majors: [],
+            minors:[],
         }
+    },
+
+    mounted() {
+        this.fetchMajors();
+        this.fetchMinors();
     },
 
     methods: {
 
+
+        // Majors and Minors for a dropdown selection
+        async fetchMajors() {
+            try {
+                const module = await import('../http-common.js');
+                const apiClient = module.default;
+                const response = await apiClient.get('/majors');
+                this.majors = response.data;
+            } catch (error) {
+                console.error('Error fetching majors:', error);
+            }
+        },
+
+        async fetchMinors() {
+            try {
+                const module = await import('../http-common.js');
+                const apiClient = module.default;
+                const response = await apiClient.get('/minors');
+                this.minors = response.data;
+            } catch (error) {
+                console.error('Error fetching minors:', error);
+            }
+        },
+
+        // Create student form submition method
         submitStudent() {
             // You have to fill certain fields to create a student
-            if (!this.student.firstname || !this.student.lastname || !this.student.email || !this.student.student_id) {
+            if (!this.student.firstname || !this.student.lastname || !this.student.email) {
                 this.error = 'Please fill in all required fields';
                 return;
             }
 
+            // Student payload 
+            const payload = {
+                firstname: this.student.firstname,
+                lastname: this.student.lastname,
+                preferred_name: this.student.preferred_name,
+                email: this.student.email,
+                math_proficient: this.student.math_proficient ? 1 : 0,
+                reading_proficient: this.student.reading_proficient ? 1 : 0,
+                foreign_language: this.student.foreign_language ? 1 : 0,
+                matriculation_year: this.student.matriculation_year,
+                is_active: this.student.is_active ? 1 : 0
+            };
+
             // API post call to create student
             import('../http-common.js').then(module => {
                 const apiClient = module.default;
-                apiClient.post('/students', this.student)
+                apiClient.post('/students', payload)
                     .then(response => {
+                        const newStudent = response.data;
+                        const studentId = typeof newStudent === 'number' ? newStudent : (newStudent.student_id || newStudent.id);
+                        
+                        // Collects information from the API request
+                        const promises = [];
+                        if (this.student.major_id) {
+                            promises.push(apiClient.post('/majorstudents', {
+                                student_id: studentId,
+                                major_id: this.student.major_id
+                            }));
+                        }
+                        
+                        if (this.student.minor_id) {
+                            promises.push(apiClient.post('/minorstudents', {
+                                student_id: studentId,
+                                minor_id: this.student.minor_id
+                            }));
+                        }
+                        
+                        return Promise.all(promises);
+                    })
+                    .then(() => {
                         this.success = 'Student created successfully!';
                         this.error = null;
+
+                        // Update student list
+                        this.studentStore.fetchStudents(); 
+
                         this.student = {
                             firstname: '',
                             lastname: '',
                             preferred_name: '',
                             email: '',
-                            student_id: '',
                             matriculation_year: new Date().getFullYear(),
                             math_proficient: false,
                             reading_proficient: false,
                             foreign_language: false,
                             is_active: true,
-                            major: '',
-                            minor: '',
-                            credits: []
+                            major_id: null,
+                            minor_id: null,
                         };
                         setTimeout(() => this.success = null, 3000);
                     })
@@ -78,15 +146,13 @@ export default {
                 lastname: '',
                 preferred_name: '',
                 email: '',
-                student_id: '',
                 matriculation_year: new Date().getFullYear(),
                 math_proficient: false,
                 reading_proficient: false,
                 foreign_language: false,
                 is_active: true,
-                major: '',
-                minor: '',
-                credits: []
+                major_id: null,
+                minor_id: null,
             };
             this.error = null;
             this.success = null;
@@ -112,42 +178,35 @@ export default {
                     <div class="field">
                         <label class="label">First Name</label>
                         <div class="control">
-                            <input v-model="student.firstname" class="input" type="text" placeholder="Enter first name">
+                            <input v-model="student.firstname" class="input" type="text">
                         </div>
                     </div>
 
                     <div class="field">
                         <label class="label">Last Name</label>
                         <div class="control">
-                            <input v-model="student.lastname" class="input" type="text" placeholder="Enter last name">
+                            <input v-model="student.lastname" class="input" type="text">
                         </div>
                     </div>
 
                     <div class="field">
                         <label class="label">Preferred Name</label>
                         <div class="control">
-                            <input v-model="student.preferred_name" class="input" type="text" placeholder="Enter preferred name">
+                            <input v-model="student.preferred_name" class="input" type="text">
                         </div>
                     </div>
 
                     <div class="field">
                         <label class="label">Email</label>
                         <div class="control">
-                            <input v-model="student.email" class="input" type="email" placeholder="Enter email" required>
+                            <input v-model="student.email" class="input" type="email" required>
                         </div>
                     </div>
 
                     <div class="field">
-                        <label class="label">Student ID</label>
+                        <label class="label">Graduation Year</label>
                         <div class="control">
-                            <input v-model="student.student_id" class="input" type="text" placeholder="Enter student ID" required>
-                        </div>
-                    </div>
-
-                    <div class="field">
-                        <label class="label">Matriculation Year</label>
-                        <div class="control">
-                            <input v-model.number="student.matriculation_year" class="input" type="number" :placeholder="new Date().getFullYear()">
+                            <input v-model.number="student.matriculation_year" class="input">
                         </div>
                     </div>
 
@@ -190,14 +249,28 @@ export default {
                     <div class="field">
                         <label class="label">Major</label>
                         <div class="control">
-                            <input v-model="student.major" class="input" type="text" placeholder="Enter major">
+                            <div class="select is-fullwidth">
+                                <select v-model="student.major_id">
+                                    <option :value="null">None</option>
+                                    <option v-for="major in majors" :key="major.id || major.major_id" :value="major.id || major.major_id">
+                                        {{ major.major_name }}
+                                    </option>
+                                </select>
+                            </div>
                         </div>
                     </div>
 
                     <div class="field">
                         <label class="label">Minor</label>
                         <div class="control">
-                            <input v-model="student.minor" class="input" type="text" placeholder="Enter minor">
+                            <div class="select is-fullwidth">
+                                <select v-model="student.minor_id">
+                                    <option :value="null">None</option>
+                                    <option v-for="minor in minors" :key="minor.id || minor.minor_id" :value="minor.id || minor.minor_id">
+                                        {{ minor.minor_name }}
+                                    </option>
+                                </select>
+                            </div>
                         </div>
                     </div>
 

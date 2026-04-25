@@ -44,9 +44,11 @@ export default {
 
       <div class="navbar-end">
         <div class="navbar-item">
-          <div v-if="authStore.isLoggedIn">
-            <router-link to="/change" class="button is-light">Change Password</router-link>
-            <button class="button is-light ml-2" @click="handleLogout">Logout</button>
+          <div v-if="authStore.isLoggedIn" class="is-flex is-align-items-center">
+            <button class="button is-light mr-3" @click="handleLogout">Logout</button>
+            <router-link to="/change" class="icon is-medium has-text-light">
+              <i class="fas fa-utility fa-gear fa-lg"></i>
+            </router-link>
           </div>
           <div v-else>
             <router-link to="/login" class="button is-light">Login</router-link>
